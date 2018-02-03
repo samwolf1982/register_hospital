@@ -101,6 +101,7 @@ class m180203_121547_create_doctor_table extends Migration
 //        ]);
     }
 
+
     /**
      * @inheritdoc
      */
