@@ -1,6 +1,8 @@
 <?php
 namespace frontend\controllers;
 
+use app\models\Order;
+use app\models\Profession;
 use Yii;
 use common\models\LoginForm;
 use frontend\models\PasswordResetRequestForm;
@@ -8,6 +10,8 @@ use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\ContactForm;
 use yii\base\InvalidParamException;
+use yii\data\ArrayDataProvider;
+use yii\helpers\ArrayHelper;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
@@ -72,7 +76,67 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+
+        $model = new Order();
+        $profession_list = [];
+        $dataProvider=[];
+        $doc_list=[];
+        $selected_profesion=null;
+        $stringHash=uniqid();
+        $stage=1;
+        if (Yii::$app->request->post()){
+            $model_post=Yii::$app->request->post("Order");
+            $model->cod=$model_post['cod'];
+
+            yii::error(['in post 1']);
+            $doc_id=Yii::$app->request->post("dokid");
+            if (!empty( $model->cod) && !empty($doc_id)){
+                $stage=3;
+                ////                       все враччи по даной специальности  $model_profession->id
+                    $selected_profesion=Profession::find()->where(['id'=>$doc_id])->one();
+                    $doc_list=  $selected_profesion->doctors;
+//                yii::error($doc_id);
+//                yii::error($selected_profesion);
+//                yii::error($doc_list);
+                yii::error(['in post 3']);
+            }elseif(!empty( $model->cod)){
+                yii::error(['in post 2']);
+                $model->client_name=$model_post['client_name'];
+                $model->client_surname=$model_post['client_surname'];
+                $model->client_patronymic=$model_post['client_patronymic'];
+                $model->born=$model_post['born'];
+                //$profession_list = ArrayHelper::map(Profession::find()->all(),'id','name');
+                $profession_list = Profession::find()->where(1)->all();
+                $stage=2;
+
+
+//                if (!empty($model_profession->id) ){
+//                    $stage=3;
+////                       все враччи по даной специальности  $model_profession->id
+//                    $selected_profesion=Profession::find()->where(['id'=>$model_profession->id])->all();
+////                         yii::error($selected_profesion);
+//                    $doc_list=  $selected_profesion->doctors;
+//
+//
+//                    yii::error($doc_list);
+//                    $tmp=[];
+//                    foreach ($doc_list as $item) {
+//                        $tmp[]=["d1"=>$item->id  ,"d2"=>$item->name,"d3"=>"risus@consequatdolorvitae.org",'d4'=>'dsadasad','d5'=>'sadasda','d6'=>'sdsa','d7'=>'dsadasda'];
+//                    }
+//                    $resultData=$tmp;
+//
+//                }
+                //  yii::error($profession_list);
+            }
+
+
+        }
+
+
+
+        return $this->render('index', [
+            'model' => $model,'stringHash'=>$stringHash,'stage'=>$stage,'profession_list'=>$profession_list,'profession_list'=>$profession_list,'doc_list'=>$doc_list,'selected_profesion'=>$selected_profesion
+        ]);
     }
 
     /**

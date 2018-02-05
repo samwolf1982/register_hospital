@@ -19,9 +19,9 @@ class m180203_134843_create_period_table extends Migration
 
           $list_period=[];
         foreach (range(8,17) as $t) {
-            $list_period[]=[ "{$t}:00 | {$t}:30"];
+            $list_period[]=[ "{$t}:00"];
             $j=$t+1;
-            $list_period[]=[ "{$t}:30 | {$j}:00"];
+            $list_period[]=[ "{$t}:30"];
         }
 
         $this->batchInsert('{{%day_period}}', ['name'],

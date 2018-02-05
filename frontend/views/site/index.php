@@ -2,19 +2,56 @@
 
 /* @var $this yii\web\View */
 
-$this->title = 'My Yii Application';
+use app\components\RegisterclientWidget;
+use yii\helpers\Html;
+
+$this->title = 'Med Clinic';
 ?>
+<style>
+    .jumbotron{
+        border: solid 1px grey;
+    }
+</style>
+
 <div class="site-index">
 
     <div class="jumbotron">
-        <h1>Congratulations!</h1>
 
-        <p class="lead">You have successfully created your Yii-powered application.</p>
-
-        <p><a class="btn btn-lg btn-success" href="http://www.yiiframework.com">Подать заявку</a></p>
+                SOME INFO BLOck
     </div>
 
     <div class="body-content">
+
+        <div class="row">
+            <div class="col-sm-12">
+
+                <h1 class="text-center"><?= Html::encode("Место подачи заявки") ?></h1>
+
+                <div class="panel panel-default">
+                    <div class="panel-body">
+
+                        <?= $this->render('_form', [
+                            'model' => $model,'stringHash'=>$stringHash,'stage'=>$stage,'profession_list'=>$profession_list,'profession_list'=>$profession_list,'doc_list'=>$doc_list,'selected_profesion'=>$selected_profesion
+                        ]) ?>
+
+                    </div>
+                </div>
+
+
+
+
+            </div>
+        </div>
+
+
+        <div class="jumbotron">
+
+            SOME INFO BLOck 2
+
+
+
+        </div>
+
 
         <div class="row">
             <div class="col-lg-4">

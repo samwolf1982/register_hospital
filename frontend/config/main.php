@@ -10,6 +10,7 @@ return [
     'id' => 'app-frontend',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
+
     'controllerNamespace' => 'frontend\controllers',
     'components' => [
         'user' => [
@@ -30,12 +31,15 @@ return [
         ],
 
 
-'urlManager' => [
-    'enablePrettyUrl' => true,
-    'showScriptName' => false,
-    'rules' => [
-    ],
-],
+        'urlManager' => [
+            'class' => 'yii\web\UrlManager',
+            'enablePrettyUrl' => true, // на время использования Gii переключить на false
+            'showScriptName' => false, // на время использования Gii переключить в true
+            'rules' => [
+                '' => 'site/index',
+                '<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
+            ]
+        ]
 
 
     ],
