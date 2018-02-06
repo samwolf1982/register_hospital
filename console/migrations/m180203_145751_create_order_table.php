@@ -22,6 +22,9 @@ class m180203_145751_create_order_table extends Migration
             'born'=>$this->date()->null()->comment('Год рождения'),
 
             'doctor_id'=>$this->integer()->notNull()->comment('Доктор'),
+
+            'profession_id'=>$this->integer()->null()->comment('Выберите специализацию врача') , // удобство для пост запроса используется только для определения етапа в отправке форм
+
             'period_id'=>$this->integer()->notNull()->comment('Период'),
             'statusorder_id'=>$this->integer()->notNull()->defaultValue(0)->comment('Состояние заявки'),// 0 новая  1 закрытая
             'date'=>$this->date()->notNull()->comment('Дата'),// число на когда записался человек

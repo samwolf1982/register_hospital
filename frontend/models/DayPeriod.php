@@ -10,7 +10,6 @@ use Yii;
  * @property int $id
  * @property string $name
  *
- * @property CalendarToDayPeriod[] $calendarToDayPeriods
  * @property Order[] $orders
  */
 class DayPeriod extends \yii\db\ActiveRecord
@@ -42,14 +41,6 @@ class DayPeriod extends \yii\db\ActiveRecord
             'id' => 'ID',
             'name' => 'Name',
         ];
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCalendarToDayPeriods()
-    {
-        return $this->hasMany(CalendarToDayPeriod::className(), ['day_period_id' => 'id']);
     }
 
     /**

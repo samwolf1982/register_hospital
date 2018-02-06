@@ -31,7 +31,8 @@ $this->title = 'Med Clinic';
                     <div class="panel-body">
 
                         <?= $this->render('_form', [
-                            'model' => $model,'stringHash'=>$stringHash,'stage'=>$stage,'profession_list'=>$profession_list,'profession_list'=>$profession_list,'doc_list'=>$doc_list,'selected_profesion'=>$selected_profesion
+                            'model' => $model,'stringHash'=>$stringHash,'stage'=>$stage,'profession_list'=>$profession_list,'profession_list'=>$profession_list,'doc_list'=>$doc_list,'selected_profesion'=>$selected_profesion,
+                            'profession_list_drop'=>$profession_list_drop,'next_week'=>$next_week,
                         ]) ?>
 
                     </div>

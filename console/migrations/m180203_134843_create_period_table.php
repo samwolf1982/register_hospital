@@ -23,6 +23,7 @@ class m180203_134843_create_period_table extends Migration
             $j=$t+1;
             $list_period[]=[ "{$t}:30"];
         }
+        $list_period[]=[ "Живая очередь"];
 
         $this->batchInsert('{{%day_period}}', ['name'],
             $list_period

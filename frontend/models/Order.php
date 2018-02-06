@@ -14,6 +14,7 @@ use Yii;
  * @property string $client_patronymic Отчество
  * @property string $born Год рождения
  * @property int $doctor_id Доктор
+ * @property int $profession_id Специализация ид
  * @property int $period_id Период
  * @property int $statusorder_id Состояние заявки
  * @property string $date Дата
@@ -41,7 +42,7 @@ class Order extends \yii\db\ActiveRecord
             [['cod', 'doctor_id', 'period_id', 'date', 'date_created'], 'required'],
             [['client_name', 'client_surname', 'client_patronymic'], 'string'],
             [['born', 'date', 'date_created'], 'safe'],
-            [['doctor_id', 'period_id', 'statusorder_id'], 'integer'],
+            [['doctor_id', 'profession_id', 'period_id', 'statusorder_id'], 'integer'],
             [['cod'], 'string', 'max' => 255],
             [['doctor_id'], 'exist', 'skipOnError' => true, 'targetClass' => Doctor::className(), 'targetAttribute' => ['doctor_id' => 'id']],
             [['period_id'], 'exist', 'skipOnError' => true, 'targetClass' => DayPeriod::className(), 'targetAttribute' => ['period_id' => 'id']],
@@ -61,6 +62,7 @@ class Order extends \yii\db\ActiveRecord
             'client_patronymic' => 'Отчество',
             'born' => 'Год рождения',
             'doctor_id' => 'Доктор',
+            'profession_id' => 'Специализация ид',
             'period_id' => 'Период',
             'statusorder_id' => 'Состояние заявки',
             'date' => 'Дата',

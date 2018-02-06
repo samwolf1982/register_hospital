@@ -20,9 +20,9 @@ use yii\widgets\Pjax;
           if ($stage==1){
             echo  $this->render('forms_stage/_form_stage1.php', [ 'model' => $model,'form'=>$form]);
           }elseif ($stage==2){
-            echo  $this->render('forms_stage/_form_stage2.php', [ 'model' => $model,'form'=>$form,'profession_list'=>$profession_list,'model_profession'=>$model_profession,'profession_list'=>$profession_list,]);
+            echo  $this->render('forms_stage/_form_stage2.php', [ 'model' => $model,'form'=>$form,'profession_list'=>$profession_list,'model_profession'=>$model_profession,'profession_list'=>$profession_list,'profession_list_drop'=>$profession_list_drop,]);
           }elseif ($stage==3){
-              echo  $this->render('forms_stage/_form_stage3.php', [ 'model' => $model,'form'=>$form,'profession_list'=>$profession_list,'model_profession'=>$model_profession,'doc_list'=>$doc_list,'selected_profesion'=>$selected_profesion]);
+              echo  $this->render('forms_stage/_form_stage3.php', [ 'model' => $model,'form'=>$form,'profession_list'=>$profession_list,'model_profession'=>$model_profession,'doc_list'=>$doc_list,'selected_profesion'=>$selected_profesion,'next_week'=>$next_week,]);
           }
 
 

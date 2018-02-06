@@ -1,8 +1,11 @@
 <?php
 namespace frontend\controllers;
 
+use app\models\Calendar;
+use app\models\Doctor;
 use app\models\Order;
 use app\models\Profession;
+use DateTime;
 use Yii;
 use common\models\LoginForm;
 use frontend\models\PasswordResetRequestForm;
@@ -83,21 +86,66 @@ class SiteController extends Controller
         $doc_list=[];
         $selected_profesion=null;
         $stringHash=uniqid();
+        $calendar_list=[];
         $stage=1;
+        $next_week=true;
         if (Yii::$app->request->post()){
             $model_post=Yii::$app->request->post("Order");
             $model->cod=$model_post['cod'];
-
             yii::error(['in post 1']);
-            $doc_id=Yii::$app->request->post("dokid");
-            if (!empty( $model->cod) && !empty($doc_id)){
+            $model->profession_id=$model_post[ 'profession_id'];
+            //Yii::$app->request->post("dokid");
+            if (!empty( $model->cod) && !empty($model->profession_id) && !Yii::$app->request->post("change")){
                 $stage=3;
                 ////                       все враччи по даной специальности  $model_profession->id
-                    $selected_profesion=Profession::find()->where(['id'=>$doc_id])->one();
+                    $selected_profesion=Profession::find()-> where(['id'=>$model->profession_id])->one();
                     $doc_list=  $selected_profesion->doctors;
-//                yii::error($doc_id);
-//                yii::error($selected_profesion);
-//                yii::error($doc_list);
+
+                    $arr_doc_id=[];
+                $doc_list_main=[];
+                $date = new DateTime('NOW');
+                $day_week=date('w'); // смещение на количесвто дней от текущего дня до понедельника
+                if ($day_week==6){  $date->modify('+2 day');// суботта + 2 дня
+                }elseif ($day_week==0){
+                    $date->modify('+1 day');   // неділя +1ы
+                } else{
+                    $day_week-=1;
+                    $date->modify("-{$day_week} day");
+                }
+                if (Yii::$app->request->post("next_week")==7){ // +7 если другая неделя
+                    $date->modify('+7 day');
+                    $next_week=false;
+                }
+
+                foreach ($doc_list as $doctor) {
+                    $calendar_list=[];
+
+                    $arr_doc_id[]=$doctor->id;
+
+                    foreach (['Пн','Вт','Ср','Чт','Пт','Сб','Вс',
+                                 //    'Понедельник','Вторник','Среда','Четверг','Пятница','Субота','Воскресенье'
+                             ] as $id) {
+                        $tj=$date->format('Y-m-d');
+                        $tmp_cal=[];
+
+                            //самій быстрый вариант при множестве трабла IN ( 12 2 2 23 ...)
+                            $o= Calendar::find()->select(['timetable'])->where(['doctor_id'=>$doctor->id,'date'=>$tj])->limit(1)->one();
+                               $json_arr = json_decode($o->timetable);
+                               $tmp_cal=['doc_id'=>$doctor->id,'timetable'=> $json_arr];
+
+                               $calendar_list[]=['doclist'=>$tmp_cal,'day_name'=> sprintf ("%s, %d",$id,$date->format('d')) ];
+                        unset($tmp_cal);
+                        $date->modify('+1 day');
+                    }
+                    $doc_list_main[]=['doctor'=>$doctor,'calendar_list'=>$calendar_list];
+                    unset($calendar_list);
+                    $date->modify('+1 day');
+                    } // end $doc_list as $doctor
+
+
+ yii::error($doc_list_main);
+                $doc_list= $doc_list_main;
+
                 yii::error(['in post 3']);
             }elseif(!empty( $model->cod)){
                 yii::error(['in post 2']);
@@ -105,28 +153,10 @@ class SiteController extends Controller
                 $model->client_surname=$model_post['client_surname'];
                 $model->client_patronymic=$model_post['client_patronymic'];
                 $model->born=$model_post['born'];
-                //$profession_list = ArrayHelper::map(Profession::find()->all(),'id','name');
+                $profession_list_drop = ArrayHelper::map(Profession::find()->all(),'id','name');
                 $profession_list = Profession::find()->where(1)->all();
                 $stage=2;
 
-
-//                if (!empty($model_profession->id) ){
-//                    $stage=3;
-////                       все враччи по даной специальности  $model_profession->id
-//                    $selected_profesion=Profession::find()->where(['id'=>$model_profession->id])->all();
-////                         yii::error($selected_profesion);
-//                    $doc_list=  $selected_profesion->doctors;
-//
-//
-//                    yii::error($doc_list);
-//                    $tmp=[];
-//                    foreach ($doc_list as $item) {
-//                        $tmp[]=["d1"=>$item->id  ,"d2"=>$item->name,"d3"=>"risus@consequatdolorvitae.org",'d4'=>'dsadasad','d5'=>'sadasda','d6'=>'sdsa','d7'=>'dsadasda'];
-//                    }
-//                    $resultData=$tmp;
-//
-//                }
-                //  yii::error($profession_list);
             }
 
 
@@ -135,7 +165,8 @@ class SiteController extends Controller
 
 
         return $this->render('index', [
-            'model' => $model,'stringHash'=>$stringHash,'stage'=>$stage,'profession_list'=>$profession_list,'profession_list'=>$profession_list,'doc_list'=>$doc_list,'selected_profesion'=>$selected_profesion
+            'model' => $model,'stringHash'=>$stringHash,'stage'=>$stage,'profession_list'=>$profession_list,'profession_list'=>$profession_list,'doc_list'=>$doc_list,'selected_profesion'=>$selected_profesion,
+            'profession_list_drop'=>$profession_list_drop,'next_week'=>$next_week,
         ]);
     }
 

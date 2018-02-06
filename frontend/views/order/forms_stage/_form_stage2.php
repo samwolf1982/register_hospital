@@ -1,7 +1,12 @@
 <?php
 
 use yii\bootstrap\Html;
+?>
 
+
+
+
+<?php
 echo $form->field($model, 'cod')->textInput(['maxlength' => true,'class'=>'hidden']);
 //    echo $form->field($model, 'client_name')->textInput(['maxlength' => true]);
 //    echo $form->field($model, 'client_surname')->textInput(['maxlength' => true]);
