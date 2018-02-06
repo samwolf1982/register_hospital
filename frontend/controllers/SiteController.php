@@ -104,6 +104,7 @@ class SiteController extends Controller
                     $arr_doc_id=[];
                 $doc_list_main=[];
                 $date = new DateTime('NOW');
+                $active_day_date = new DateTime('NOW');
                 $day_week=date('w'); // смещение на количесвто дней от текущего дня до понедельника
                 if ($day_week==6){  $date->modify('+2 day');// суботта + 2 дня
                 }elseif ($day_week==0){
@@ -123,27 +124,31 @@ class SiteController extends Controller
                     $arr_doc_id[]=$doctor->id;
 
                     foreach (['Пн','Вт','Ср','Чт','Пт','Сб','Вс',
-                                 //    'Понедельник','Вторник','Среда','Четверг','Пятница','Субота','Воскресенье'
                              ] as $id) {
                         $tj=$date->format('Y-m-d');
                         $tmp_cal=[];
-
                             //самій быстрый вариант при множестве трабла IN ( 12 2 2 23 ...)
                             $o= Calendar::find()->select(['timetable'])->where(['doctor_id'=>$doctor->id,'date'=>$tj])->limit(1)->one();
                                $json_arr = json_decode($o->timetable);
                                $tmp_cal=['doc_id'=>$doctor->id,'timetable'=> $json_arr];
+                               $active_day=true;
 
-                               $calendar_list[]=['doclist'=>$tmp_cal,'day_name'=> sprintf ("%s, %d",$id,$date->format('d')) ];
+                         $numnber_day=date('z'); // номер дня в году     44
+                        $numnber_day_bd=date('z',$date->getTimestamp()); // номер дня в году     44
+                        if ($numnber_day > $numnber_day_bd ){ $active_day=false;}
+                        yii::error([$numnber_day,$numnber_day_bd]);
+                               $calendar_list[]=['doclist'=>$tmp_cal,'day_name'=> sprintf ("%s, %d",$id,$date->format('d')),'active_day'=>$active_day, ];
                         unset($tmp_cal);
                         $date->modify('+1 day');
                     }
+                    $date->modify('-8 day');
                     $doc_list_main[]=['doctor'=>$doctor,'calendar_list'=>$calendar_list];
                     unset($calendar_list);
                     $date->modify('+1 day');
                     } // end $doc_list as $doctor
 
 
- yii::error($doc_list_main);
+// yii::error($doc_list_main);
                 $doc_list= $doc_list_main;
 
                 yii::error(['in post 3']);
@@ -169,6 +174,22 @@ class SiteController extends Controller
             'profession_list_drop'=>$profession_list_drop,'next_week'=>$next_week,
         ]);
     }
+
+    /**
+     * Logs in a user.
+     *
+     * @return mixed
+     */
+    public function actionCheckorder()
+    {
+        $param=[1,2,3];
+        $name='nameme';
+        $message=' $message $message $message';
+        return $this->renderPartial('checkorder', [
+        'param'=>$param,'name'=>$name,'message'=>$message
+        ]);
+    }
+
 
     /**
      * Logs in a user.

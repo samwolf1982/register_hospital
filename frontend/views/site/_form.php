@@ -1,5 +1,6 @@
 <?php
 
+use yii\bootstrap\Modal;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\widgets\Pjax;
@@ -50,8 +51,37 @@ use yii\widgets\Pjax;
 
     <?php // $form->field($model, 'date_created')->textInput() ?>
 
-
-
     <?php ActiveForm::end(); ?>
     <?php Pjax::end(); ?>
 </div>
+
+
+
+
+<?php
+
+Modal::begin([
+    'header'=>'<h4>Подтверждение записи</h4>',
+    'id'=>'time_modal',
+    'size'=>'modal-lg',
+    'clientEvents' => [
+        'show.bs.modal' => new \yii\web\JsExpression("function(event){
+         console.log(event.relatedTarget);
+                             
+            var rel_target =$(event.relatedTarget);
+             $(this).attr('href');
+            var target = $(this).data('target');
+            console.log(target);
+            console.log(this);
+               $(this).find('#modalContent', $(target)).load(rel_target.attr('href'));
+            
+            //$('.modal-content', $(target)).load(rel_target.attr('href'));
+        }"),
+        ]
+]);
+
+echo "<div id='modalContent'>
+me modal !!!!
+</div>";
+Modal::end();
+?>

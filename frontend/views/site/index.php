@@ -2,7 +2,6 @@
 
 /* @var $this yii\web\View */
 
-use app\components\RegisterclientWidget;
 use yii\helpers\Html;
 
 $this->title = 'Med Clinic';
@@ -89,3 +88,7 @@ $this->title = 'Med Clinic';
 
     </div>
 </div>
+
+
+
+

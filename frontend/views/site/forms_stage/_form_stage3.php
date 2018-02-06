@@ -67,6 +67,26 @@ text-align: center;
         display: flex;
         justify-content: space-between;
     }
+    .clear_btn{
+        border: none!important;
+    }
+    .clear_btn:hover ,.btn-clear_btn:active, .clear_btn.btn-schedule.disabled:hover, .clear_btn.btn-schedule.disabled:active
+    .clear_btn:hover, .clear_btn:active,.clear_btn.btn-schedule.disabled:hover, .clear_btn.btn-schedule.disabled:focus
+    {
+          background: transparent!important; /* Цвет фона под ссылкой */
+          color: #e82654!important; /* Цвет ссылки */
+        cursor: default!important;
+        text-decoration: none;
+        border-color: transparent;
+
+      }
+
+
+    .clear_btn.btn-schedule.disabled:focus,.clear_btn.btn-schedule.disabled:active {
+        outline: none !important;
+        box-shadow: none;
+    }
+
 
 </style>
 
@@ -77,14 +97,12 @@ text-align: center;
     </div>
     <div class="link_nav">
 
-
         <?php
         if ($next_week){
             echo Html::submitButton("Следущая неделя", ['class' => 'btn btn-schedule', 'name' => 'next_week', 'value' => '7']);
         }else{
             echo Html::submitButton("Предыдущая неделя", ['class' => 'btn btn-schedule', 'name' => 'prev_week', 'value' => '7']);
         }
-
 
         ?>
 <?php
@@ -140,7 +158,15 @@ foreach ($doc_list as $item) {  ?>
 
                                                <?php if ($json->type=='time'){?>
                                                <div class="day_time hour">
-                                                   <?php echo Html::submitButton($json->val, ['class' => 'btn btn-schedule', 'name' => 'dok_order', 'value' => $info['doclist']['doc_id'] . '_' . $json->id]);
+                                                   <?php
+                                                   if ($info['active_day']){
+
+                                                       echo Html::button($json->val, ['class' => 'btn btn-schedule', 'data-target'=>'#time_modal','data-toggle'=>'modal', 'name' => 'dok_order', 'href'=>'site/checkorder', 'value' => $info['doclist']['doc_id'] . '_' . $json->id]);
+                                                   }else{
+//                                                       echo Html::tag('span',$json->val,['class'=>'in_active_day']);
+                                                       echo Html::button($json->val, ['class' => 'clear_btn btn-schedule disabled']);
+                                                   }
+
                                                    ?>
                                                </div>
                                                    <?php } ?>
