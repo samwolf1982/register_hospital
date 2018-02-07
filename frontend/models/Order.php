@@ -14,11 +14,12 @@ use Yii;
  * @property string $client_patronymic Отчество
  * @property string $born Год рождения
  * @property int $doctor_id Доктор
- * @property int $profession_id Специализация ид
+ * @property int $profession_id Выберите специализацию врача
  * @property int $period_id Период
  * @property int $statusorder_id Состояние заявки
  * @property string $date Дата
  * @property string $date_created Дата создания
+ * @property string $hash хеш урла для предотврашениея повторных заявок
  *
  * @property Doctor $doctor
  * @property DayPeriod $period
@@ -39,11 +40,13 @@ class Order extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['cod', 'doctor_id', 'period_id', 'date', 'date_created'], 'required'],
+            [[ 'doctor_id', 'period_id', 'date', 'date_created'], 'required'],
+            [['cod'], 'required','message'=>'Введите ваш номер страхового полиса'],
             [['client_name', 'client_surname', 'client_patronymic'], 'string'],
             [['born', 'date', 'date_created'], 'safe'],
             [['doctor_id', 'profession_id', 'period_id', 'statusorder_id'], 'integer'],
-            [['cod'], 'string', 'max' => 255],
+            [[ 'hash'], 'string', 'max' => 255],
+            [['cod'], 'string',  'min' => 16,'max' => 16,'length' => [16],'message'=>'Длина должна быть 16 символов','tooShort'=>'Длина должна быть 16 символов','tooLong'=>'Длина должна быть 16 символов'],
             [['doctor_id'], 'exist', 'skipOnError' => true, 'targetClass' => Doctor::className(), 'targetAttribute' => ['doctor_id' => 'id']],
             [['period_id'], 'exist', 'skipOnError' => true, 'targetClass' => DayPeriod::className(), 'targetAttribute' => ['period_id' => 'id']],
         ];
@@ -62,11 +65,12 @@ class Order extends \yii\db\ActiveRecord
             'client_patronymic' => 'Отчество',
             'born' => 'Год рождения',
             'doctor_id' => 'Доктор',
-            'profession_id' => 'Специализация ид',
+            'profession_id' => 'Выберите специализацию врача',
             'period_id' => 'Период',
             'statusorder_id' => 'Состояние заявки',
             'date' => 'Дата',
             'date_created' => 'Дата создания',
+            'hash' => 'хеш урла для предотврашениея повторных заявок',
         ];
     }
 

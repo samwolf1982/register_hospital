@@ -16,6 +16,7 @@ use yii\base\InvalidParamException;
 use yii\data\ArrayDataProvider;
 use yii\helpers\ArrayHelper;
 use yii\web\BadRequestHttpException;
+use yii\web\ConflictHttpException;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
@@ -128,7 +129,7 @@ class SiteController extends Controller
                         $tj=$date->format('Y-m-d');
                         $tmp_cal=[];
                             //самій быстрый вариант при множестве трабла IN ( 12 2 2 23 ...)
-                            $o= Calendar::find()->select(['timetable'])->where(['doctor_id'=>$doctor->id,'date'=>$tj])->limit(1)->one();
+                            $o= Calendar::find()->select(['timetable','id'])->where(['doctor_id'=>$doctor->id,'date'=>$tj])->limit(1)->one();
                                $json_arr = json_decode($o->timetable);
                                $tmp_cal=['doc_id'=>$doctor->id,'timetable'=> $json_arr];
                                $active_day=true;
@@ -136,8 +137,8 @@ class SiteController extends Controller
                          $numnber_day=date('z'); // номер дня в году     44
                         $numnber_day_bd=date('z',$date->getTimestamp()); // номер дня в году     44
                         if ($numnber_day > $numnber_day_bd ){ $active_day=false;}
-                        yii::error([$numnber_day,$numnber_day_bd]);
-                               $calendar_list[]=['doclist'=>$tmp_cal,'day_name'=> sprintf ("%s, %d",$id,$date->format('d')),'active_day'=>$active_day, ];
+//                        yii::error($o);
+                               $calendar_list[]=['doclist'=>$tmp_cal,'day_name'=> sprintf ("%s, %d",$id,$date->format('d')),'active_day'=>$active_day,'calendar_id'=>$o->id];
                         unset($tmp_cal);
                         $date->modify('+1 day');
                     }
@@ -185,9 +186,147 @@ class SiteController extends Controller
         $param=[1,2,3];
         $name='nameme';
         $message=' $message $message $message';
-        return $this->renderPartial('checkorder', [
-        'param'=>$param,'name'=>$name,'message'=>$message
-        ]);
+//        ?cod=asdasd&doc_id=261&calendar_id=18761&day_id=2
+
+        $doc=Doctor::find()->where(['id'=>$_GET['doc_id']])->one();
+        if ($doc){
+            $doc_spec=$doc->profession->name;
+        }
+
+        $clinic_name=Yii::$app->params['clinic_name'];
+        $adress=Yii::$app->params['street_name'];
+        $to_do="Прием ".$doc_spec .'a';
+
+        $calendar=Calendar::find()->where(['id'=>$_GET['calendar_id']])->one();
+
+        if ($calendar){
+            $calendar_id=$_GET['calendar_id'];
+            $json_timetable= json_decode( $calendar->timetable);
+            $day_id=$_GET['day_id'];
+            foreach ($json_timetable as $item) {
+                if ($item->id==$day_id){ // cовпадение по ид
+                    $time= $item->val;
+                    break;
+                }
+            }
+
+
+
+            $m_list=["Января", "Февраля", "Марта","Апреля","Мая","Июня","Июля","Августа","Сентября","Октября","Ноября","Декабря"];
+            $m=$m_list[date('n',     strtotime($calendar->date))];
+            $date=date("j-{$m}-Y",strtotime($calendar->date));
+//          var_dump($json_timetable);
+//          die();
+        }
+
+
+
+//        $time="13:00";
+        $doc_order="Прием по талону.";
+        $doc_name=$doc->name." ".$doc->surname.' '.$doc->patronymic;;
+        $cod=$_GET['cod'];  // simple validate
+
+        return $this->renderPartial('checkorder',
+            compact('clinic_name','adress','doc_spec','to_do','date','time','doc_order','cod','doc_name','calendar_id','day_id'));
+    }
+
+
+
+
+    /**
+     * create order
+     *
+     * @return mixed
+     */
+    public function actionSuccess()
+    {
+
+
+   //  http://localhost5/site/checkorder?cod=asdasd&doctor_id=261&calendar_id=18761&day_id=2
+
+//        [['cod', 'doctor_id', 'period_id', 'date', 'date_created'], 'required'],
+
+        $hash=md5($_GET['cod'].'_'.$_GET['calendar_id'].'_'.$_GET['day_id']);
+        $present_order=Order::find()->where(['hash'=>$hash])->one();
+
+        if ($present_order){
+            throw new ConflictHttpException('Такая заявка уже существует попробуйте выбрать другое время');
+        }
+
+        $order =new Order();
+        $order->cod=$_GET['cod'];
+        $calendar=Calendar::find()->where(['id'=>$_GET['calendar_id']])->one();
+        $order->doctor_id=$calendar->doctor_id;
+        $order->period_id=$_GET['day_id'];
+        $order->date=$calendar->date;
+        $order->hash=$hash;
+//        2018-02-07 06:20:16
+        $order->date_created=date("Y-m-d H:i:s");
+
+        if ($order->validate()){
+$order->save();
+        }else{
+            throw new ConflictHttpException('Not validate');
+        }
+
+
+
+
+
+        //
+
+
+
+        $doc=Doctor::find()->where(['id'=>$calendar->doctor_id])->one();
+        if ($doc){
+            $doc_spec=$doc->profession->name;
+        }
+
+        $clinic_name=Yii::$app->params['clinic_name'];
+        $adress=Yii::$app->params['street_name'];
+        $to_do="Прием ".$doc_spec .'a';
+
+        $calendar=Calendar::find()->where(['id'=>$_GET['calendar_id']])->one();
+
+        if ($calendar){
+            $calendar_id=$_GET['calendar_id'];
+            $json_timetable= json_decode( $calendar->timetable);
+            $day_id=$_GET['day_id'];
+            foreach ($json_timetable as $item) {
+                if ($item->id==$day_id){ // cовпадение по ид
+                    $time= $item->val;
+                    break;
+                }
+            }
+
+
+
+            $m_list=["Января", "Февраля", "Марта","Апреля","Мая","Июня","Июля","Августа","Сентября","Октября","Ноября","Декабря"];
+            $m=$m_list[date('n',     strtotime($calendar->date))];
+            $date=date("j-{$m}-Y",strtotime($calendar->date));
+//          var_dump($json_timetable);
+//          die();
+        }
+
+
+
+//        $time="13:00";
+        $doc_order="Прием по талону.";
+        $doc_name=$doc->name." ".$doc->surname.' '.$doc->patronymic;;
+        $cod=$_GET['cod'];  // simple validate
+
+
+//        Yii::$app->mailer->compose()
+//            ->setFrom(Yii::$app->params['hostingemail'])
+//            ->setTo(Yii::$app->params['adminEmail'])
+//            ->setSubject('Новая запись на прием')
+//            ->setTextBody('У вас на сайте новая запись на прием')
+//            ->setHtmlBody('<b>текст сообщения в формате HTML</b>')
+//            ->send();
+
+
+        return $this->render('success',
+            compact('clinic_name','adress','doc_spec','to_do','date','time','doc_order','cod','doc_name','calendar_id','day_id'));
     }
 
 

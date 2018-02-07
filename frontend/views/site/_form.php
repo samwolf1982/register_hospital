@@ -13,8 +13,6 @@ use yii\widgets\Pjax;
 <div class="order-form ">
     <?php  Pjax::begin(['id' => 'step_order_form']); ?>
 
-    <h3> indicator reload(hash):   <?= $stringHash ?></h3>
-
     <?php $form = ActiveForm::begin(['options' => ['data-pjax' => true]]); ?>
 
     <?php

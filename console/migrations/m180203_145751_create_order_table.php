@@ -29,6 +29,8 @@ class m180203_145751_create_order_table extends Migration
             'statusorder_id'=>$this->integer()->notNull()->defaultValue(0)->comment('Состояние заявки'),// 0 новая  1 закрытая
             'date'=>$this->date()->notNull()->comment('Дата'),// число на когда записался человек
             'date_created'=>$this->dateTime()->notNull()->comment('Дата создания'),
+            'hash'=>$this->string()->null()->comment('хеш урла для предотврашениея повторных заявок'),
+
         ]);
 
         $this->addForeignKey('order_to_doctor', '{{%order}}', 'doctor_id', '{{%doctor}}', 'id', 'NO ACTION', 'CASCADE');

@@ -10,12 +10,14 @@ return [
     'id' => 'app-frontend',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
-
     'controllerNamespace' => 'frontend\controllers',
     'components' => [
         'user' => [
             'identityClass' => 'common\models\User',
             'enableAutoLogin' => true,
+        ],
+        'mailer' => [
+            'class' => 'yii\swiftmailer\Mailer',
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,

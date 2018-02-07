@@ -3,7 +3,7 @@
 
 use yii\bootstrap\Html;
 use yii\grid\GridView;
-
+use yii\helpers\Url;
 
 
 echo $form->field($model, 'cod')->textInput(['maxlength' => true,'class'=>'hidden'])->label('');
@@ -160,8 +160,8 @@ foreach ($doc_list as $item) {  ?>
                                                <div class="day_time hour">
                                                    <?php
                                                    if ($info['active_day']){
-
-                                                       echo Html::button($json->val, ['class' => 'btn btn-schedule', 'data-target'=>'#time_modal','data-toggle'=>'modal', 'name' => 'dok_order', 'href'=>'site/checkorder', 'value' => $info['doclist']['doc_id'] . '_' . $json->id]);
+                                                       echo Html::button($json->val, ['class' => 'btn btn-schedule', 'data-target'=>'#time_modal','data-toggle'=>'modal', 'name' => 'dok_order',
+                                                           'href'=> Url::to(['site/checkorder', 'cod' => $model->cod,'doc_id'=>$item['doctor']->id,'calendar_id'=>$info['calendar_id'],'day_id'=>$json->id]), 'value' => $info['doclist']['doc_id'] . '_' . $json->id]);
                                                    }else{
 //                                                       echo Html::tag('span',$json->val,['class'=>'in_active_day']);
                                                        echo Html::button($json->val, ['class' => 'clear_btn btn-schedule disabled']);
