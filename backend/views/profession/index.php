@@ -1,0 +1,40 @@
+<?php
+
+use yii\helpers\Html;
+use yii\grid\GridView;
+
+/* @var $this yii\web\View */
+/* @var $searchModel backend\models\ProfessionSearch */
+/* @var $dataProvider yii\data\ActiveDataProvider */
+
+$this->title = 'Список специализаций';
+$this->params['breadcrumbs'][] = $this->title;
+?>
+<div class="profession-index">
+
+
+    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+
+    <p>
+        <?= Html::a('Добавить специализацию', ['create'], ['class' => 'btn btn-success']) ?>
+    </p>
+
+    <div class="row">
+    <div class="col-sm-12 col-md-6 col-md-offset-3">
+
+
+    <?= GridView::widget([
+        'dataProvider' => $dataProvider,
+        'filterModel' => $searchModel,
+        'columns' => [
+            ['class' => 'yii\grid\SerialColumn'],
+
+           // 'id',
+            'name',
+
+            ['class' => 'yii\grid\ActionColumn'],
+        ],
+    ]); ?>
+    </div>
+    </div>
+</div>

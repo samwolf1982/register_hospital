@@ -35,7 +35,7 @@ class m180205_000640_create_calendar_table extends Migration
 //        $this->addForeignKey('FK_day_period_to_calendar', '{{%calendar_to_day_period}}', 'day_period_id', '{{%day_period}}', 'id', 'NO ACTION', 'CASCADE');
 
 
-        $this->addForeignKey('FK_calendar_to_doctor', '{{%calendar}}', 'doctor_id', '{{%doctor}}', 'id', 'NO ACTION', 'CASCADE');
+        $this->addForeignKey('FK_calendar_to_doctor', '{{%calendar}}', 'doctor_id', '{{%doctor}}', 'id', 'CASCADE', 'CASCADE');
 
 
 

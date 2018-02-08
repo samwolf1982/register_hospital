@@ -33,7 +33,7 @@ class m180203_145751_create_order_table extends Migration
 
         ]);
 
-        $this->addForeignKey('order_to_doctor', '{{%order}}', 'doctor_id', '{{%doctor}}', 'id', 'NO ACTION', 'CASCADE');
+//        $this->addForeignKey('order_to_doctor', '{{%order}}', 'doctor_id', '{{%doctor}}', 'id', 'NO ACTION', 'CASCADE');
         $this->addForeignKey('period_to_doctor', '{{%order}}', 'period_id', '{{%day_period}}', 'id', 'NO ACTION', 'CASCADE');
 
 
