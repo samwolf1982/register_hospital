@@ -45,11 +45,17 @@ if (Yii::$app->controller->action->id === 'login') {
             ['directoryAsset' => $directoryAsset]
         ) ?>
 
+
+        <?php if (Yii::$app->controller->action->id =='error'  && Yii::$app->user->isGuest ){  Yii::$app->response->redirect('/site/login');   } ?>
+
         <?= $this->render(
             'left.php',
             ['directoryAsset' => $directoryAsset]
         )
         ?>
+
+
+
 
         <?= $this->render(
             'content.php',

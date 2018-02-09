@@ -32,7 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filter' =>true,
                 'format' => 'raw',
                 'value' => function ($model) {
-                    return  $model->name.' '.$model->surname.' '.$model->patronymic;
+                    return $model->surname.' '. $model->name.' '.$model->patronymic;
                 },
             ],
             [

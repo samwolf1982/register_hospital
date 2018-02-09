@@ -31,8 +31,10 @@
                 'options' => ['class' => 'sidebar-menu tree', 'data-widget'=> 'tree'],
                 'items' => [
                     ['label' => 'Меню', 'options' => ['class' => 'header']],
+                    ['label' => 'График работы', 'icon' => 'file-code-o', 'url' => ['/calendar']],
                     ['label' => 'Врачи', 'icon' => 'file-code-o', 'url' => ['/doctor']],
                     ['label' => 'Список специализаций', 'icon' => 'file-code-o', 'url' => ['/profession']],
+                    ['label' => 'Время приема', 'icon' => 'file-code-o', 'url' => ['/dayperiod']],
                     ['label' => 'Gii', 'icon' => 'file-code-o', 'url' => ['/gii']],
                     ['label' => 'Debug', 'icon' => 'dashboard', 'url' => ['/debug']],
                     ['label' => 'Login', 'url' => ['site/login'], 'visible' => Yii::$app->user->isGuest],

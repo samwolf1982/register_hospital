@@ -5,12 +5,12 @@ namespace backend\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Doctor;
+use app\models\Calendar;
 
 /**
- * DoctorSearch represents the model behind the search form of `app\models\Doctor`.
+ * CalendarSearch represents the model behind the search form of `app\models\Calendar`.
  */
-class DoctorSearch extends Doctor
+class CalendarSearch extends Calendar
 {
     /**
      * @inheritdoc
@@ -18,8 +18,8 @@ class DoctorSearch extends Doctor
     public function rules()
     {
         return [
-            [['id', 'status_id', 'area_id'], 'integer'],
-            [['name', 'surname', 'patronymic' , 'profession_id',  'phone', 'photo'], 'safe'],
+            [['id', ], 'integer'],
+            [['date','doctor_id', 'timetable', 'created_at'], 'safe'],
         ];
     }
 
@@ -41,12 +41,13 @@ class DoctorSearch extends Doctor
      */
     public function search($params)
     {
-        $query = Doctor::find();
+        $query = Calendar::find();
 
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort'=> ['defaultOrder' => ['id'=>SORT_DESC]]
         ]);
 
         $this->load($params);
@@ -60,22 +61,18 @@ class DoctorSearch extends Doctor
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'status_id' => $this->status_id,
-            'area_id' => $this->area_id,
-            //'profession_id' => $this->profession_id,
+            'date' => $this->date,
+         //   'doctor_id' => $this->doctor_id,
+            'created_at' => $this->created_at,
         ]);
 
-        $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'surname', $this->surname])
-            ->andFilterWhere(['like', 'patronymic', $this->patronymic])
-            ->andFilterWhere(['like', 'phone', $this->phone])
-            ->andFilterWhere(['like', 'photo', $this->photo]);
 
         // Фильтр по названиею професии
-        $query->joinWith(['profession' => function ($q) {
-            $q->where('profession.name LIKE "%' . $this->profession_id . '%"');
+        $query->joinWith(['doctor' => function ($q) {
+            $q->where('doctor.surname LIKE "%' . $this->doctor_id . '%"');
         }]);
 
+        $query->andFilterWhere(['like', 'timetable', $this->timetable]);
 
         return $dataProvider;
     }

@@ -5,12 +5,12 @@ namespace backend\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Doctor;
+use app\models\DayPeriod;
 
 /**
- * DoctorSearch represents the model behind the search form of `app\models\Doctor`.
+ * DayperiodSearch represents the model behind the search form of `app\models\DayPeriod`.
  */
-class DoctorSearch extends Doctor
+class DayperiodSearch extends DayPeriod
 {
     /**
      * @inheritdoc
@@ -18,8 +18,8 @@ class DoctorSearch extends Doctor
     public function rules()
     {
         return [
-            [['id', 'status_id', 'area_id'], 'integer'],
-            [['name', 'surname', 'patronymic' , 'profession_id',  'phone', 'photo'], 'safe'],
+            [['id'], 'integer'],
+            [['name'], 'safe'],
         ];
     }
 
@@ -41,7 +41,7 @@ class DoctorSearch extends Doctor
      */
     public function search($params)
     {
-        $query = Doctor::find();
+        $query = DayPeriod::find();
 
         // add conditions that should always apply here
 
@@ -60,22 +60,9 @@ class DoctorSearch extends Doctor
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'status_id' => $this->status_id,
-            'area_id' => $this->area_id,
-            //'profession_id' => $this->profession_id,
         ]);
 
-        $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'surname', $this->surname])
-            ->andFilterWhere(['like', 'patronymic', $this->patronymic])
-            ->andFilterWhere(['like', 'phone', $this->phone])
-            ->andFilterWhere(['like', 'photo', $this->photo]);
-
-        // Фильтр по названиею професии
-        $query->joinWith(['profession' => function ($q) {
-            $q->where('profession.name LIKE "%' . $this->profession_id . '%"');
-        }]);
-
+        $query->andFilterWhere(['like', 'name', $this->name]);
 
         return $dataProvider;
     }

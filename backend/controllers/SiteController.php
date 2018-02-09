@@ -12,6 +12,7 @@ use yii\filters\VerbFilter;
  */
 class SiteController extends Controller
 {
+    private $theme_error;
     /**
      * @inheritdoc
      */
@@ -54,6 +55,14 @@ class SiteController extends Controller
             ],
         ];
     }
+//
+//    public function actionError()
+//    {
+//        $exception = Yii::$app->errorHandler->exception;
+//        if ($exception !== null) {
+//            return $this->render('error', ['exception' => $exception]);
+//        }
+//    }
 
     public function actionIndex()
     {
@@ -82,4 +91,25 @@ class SiteController extends Controller
 
         return $this->goHome();
     }
+//
+//    public function beforeAction($action)
+//    {
+//
+//
+//        yii::error($action);
+//        if (parent::beforeAction($action)) {
+//                    $theme = "error";
+//            if ($action->id=='error'){
+//                Yii::$app->view->theme = new \yii\base\Theme([
+//                    'pathMap' => ['@app/views' => '@app/views/'.$theme],
+//                    'baseUrl' => '@web',
+//
+//                ]);
+//            }
+//
+//            return true;  // or false if needed
+//        } else {
+//            return false;
+//        }
+//    }
 }
