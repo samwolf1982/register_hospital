@@ -9,6 +9,7 @@ use Yii;
  *
  * @property int $id
  * @property string $name
+ * @property string $type Тип записи время/текс
  *
  * @property Order[] $orders
  */
@@ -28,7 +29,8 @@ class DayPeriod extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name'], 'string'],
+            [['name', 'type'], 'string'],
+            [['type'], 'required'],
         ];
     }
 
@@ -40,6 +42,7 @@ class DayPeriod extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'name' => 'Название',
+            'type' => 'Тип записи время/текс',
         ];
     }
 

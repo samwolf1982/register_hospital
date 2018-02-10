@@ -2,6 +2,8 @@
 
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\web\View;
+use yii\widgets\ActiveForm;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
@@ -21,12 +23,15 @@ $this->params['breadcrumbs'][] = $this->title;
 
 </style>
 
+
 <div class="calendar-view">
 
+    <?php
 
+    ?>
 
     <p>
-        <?= Html::a('Обновить', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Изменить график на текущий день', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Удалить', ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
             'data' => [
@@ -35,6 +40,8 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
         ]) ?>
     </p>
+
+
 
     <?= DetailView::widget([
         'model' => $model,
@@ -58,14 +65,17 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     $fin='';
                     // yii::error($json);
-                    foreach ($json as $item) {
-                        if ($item->type="time"){
-                            $fin.=Html::tag('button',$item->val,['class'=>'btn btn-xs  btn-info time_btn']);
-                        }else{
-                            $fin.=Html::tag('button',$item->val,['class'=>'btn btn-xs  btn-warning time_btn']);
-                        }
+                    if (!empty($json)){
+                        foreach ($json as $item) {
+                            if ($item->type="time"){
+                                $fin.=Html::tag('button',$item->val,['class'=>'btn btn-xs  btn-info time_btn']);
+                            }else{
+                                $fin.=Html::tag('button',$item->val,['class'=>'btn btn-xs  btn-warning time_btn']);
+                            }
 
+                        }
                     }
+
                     return $fin;
                 },
             ],
@@ -78,6 +88,34 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="clearfix"></div>
     <br>
 
+    <div class="clone_week">
+        <?php $form = ActiveForm::begin(); ?>
+
+        <?= $form->field($model_monday, 'id_first_week_day')->hiddenInput()->label(""); ?>
+
+
+        <div class="form-group">
+            <?= Html::submitButton('Клонировать в следущую неделю', ['class' => 'btn btn-primary']) ?>
+        </div>
+
+        <div class="form-group">
+        <?php
+        if ($prew_week_date_model->id){ ?>
+
+                <?= Html::a('Перейти к предыдущей недели',Url::toRoute(['calendar/view','id'=>$prew_week_date_model->id]), ['class' => 'btn btn-success']) ?>
+        <?php  }  ?>
+
+        <?php
+             if ($next_week_date_model->id){ ?>
+
+                     <?= Html::a('Перейти к следущей недели',Url::toRoute(['calendar/view','id'=>$next_week_date_model->id]), ['class' => 'btn btn-success']) ?>
+
+         <?php  }  ?>
+                 </div>
+
+
+        <?php ActiveForm::end(); ?>
+    </div>
 
     <div class="row">
 
@@ -90,25 +128,42 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="clearfix"></div>
     <div class="checboxarea panel">
         <div class="panel-body">
-                <?php foreach (json_decode($item['model']->timetable) as $item) {
-                    if ($item->type="time"){
-                   echo Html::tag('button',$item->val,['class'=>'btn btn-xs  btn-info time_btn']);
-                    }else{
-                  echo Html::tag('button',$item->val,['class'=>'btn btn-xs  btn-warning time_btn']);
+
+                <?php  $json=json_decode($item['model']->timetable);
+
+               // yii::error($json);
+                if (!empty($json)){
+                    foreach ($json as $item) {
+                        if ($item->type="time"){
+                            echo Html::tag('button',$item->val,['class'=>'btn btn-xs  btn-info time_btn']);
+                        }else{
+                            echo Html::tag('button',$item->val,['class'=>'btn btn-xs  btn-warning time_btn']);
+                        }
                     }
-                } ?>
+                }
+
+                ?>
     </div>
     </div>
 
     </div>
 <?php }  ?>
 
-
-
-
-
     </div>
 
 
 
+
 </div>
+
+<?php
+
+$this->registerJs(
+    "$(function() {
+       setTimeout(function() { $( \"#w2-warning\" ).fadeOut( \"slow\");$( \"#w2-success\" ).fadeOut( \"slow\") }, 2500);   ;
+    });",
+    View::POS_READY,
+    'my-button-handler'.uniqid()
+);
+
+?>

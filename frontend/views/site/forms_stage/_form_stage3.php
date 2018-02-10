@@ -43,7 +43,9 @@ echo $form->field($model, 'cod')->textInput(['maxlength' => true,'class'=>'hidde
 
     }
     .week_header{
-        padding: 0.5em;
+        padding: 0.5em;    font-size: 110%;
+        font-weight: bold;
+
     }
     .week_day.talon{
  width: 93px;
@@ -62,6 +64,9 @@ text-align: center;
     .day_time.hour.live{
         position: relative;
         top: 50%;
+        /*background-color: lightpink;*/
+        border-radius: 4px;
+        color: #E2307D;
     }
     .dok_nav{
         display: flex;
@@ -171,7 +176,7 @@ foreach ($doc_list as $item) {  ?>
                                                </div>
                                                    <?php } ?>
 
-                                               <?php if ($json->type=='live'){?>
+                                               <?php if ($json->type=='text'){?>
                                                    <div class="day_time hour live">
                                                     <span>
                                                          <?php echo $json->val; ?>

@@ -15,17 +15,17 @@ class m180203_134843_create_period_table extends Migration
         $this->createTable('day_period', [
             'id' => $this->primaryKey(),
             'name'=>$this->text(),
+            'type'=>$this->text()->notNull()->comment('Тип записи время/текс'),// time text
         ]);
 
           $list_period=[];
         foreach (range(8,17) as $t) {
-            $list_period[]=[ "{$t}:00"];
+            $list_period[]=[ "{$t}:00",'time'];
             $j=$t+1;
-            $list_period[]=[ "{$t}:30"];
+            $list_period[]=[ "{$t}:30",'time'];
         }
-        $list_period[]=[ "Живая очередь"];
-
-        $this->batchInsert('{{%day_period}}', ['name'],
+        $list_period[]=[ "Живая очередь",'text'];
+        $this->batchInsert('{{%day_period}}', ['name','type'],
             $list_period
         );
 

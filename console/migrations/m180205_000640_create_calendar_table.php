@@ -77,11 +77,11 @@ class m180205_000640_create_calendar_table extends Migration
             echo $rn.PHP_EOL;
             if ($rn == 3 ){
                 $list_period=[];
-                $list_period[]=['id'=>$f++,'type'=>'live', 'val'=> "Живая очередь",];
+                $list_period[]=['id'=>$f++,'type'=>'text', 'val'=> "Живая очередь",];
             }
             if ($rn == 2 ){
                 $list_period=[];
-                $list_period[]=['id'=>$f++,'type'=>'empty_day', 'val'=> "В этот день приёма нет.",];
+                $list_period[]=['id'=>$f++,'type'=>'text', 'val'=> "В этот день приёма нет.",];
             }
 
 

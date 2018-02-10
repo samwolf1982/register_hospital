@@ -65,14 +65,17 @@ $this->params['breadcrumbs'][] = $this->title;
 
                             $fin='';
                            // yii::error($json);
-                    foreach ($json as $item) {
-                         if ($item->type="time"){
-                             $fin.=Html::tag('button',$item->val,['class'=>'btn btn-xs  btn-info time_btn']);
-                         }else{
-                             $fin.=Html::tag('button',$item->val,['class'=>'btn btn-xs  btn-warning time_btn']);
-                         }
+                    if (!empty($json)){
+                        foreach ($json as $item) {
+                            if ($item->type="time"){
+                                $fin.=Html::tag('button',$item->val,['class'=>'btn btn-xs  btn-info time_btn']);
+                            }else{
+                                $fin.=Html::tag('button',$item->val,['class'=>'btn btn-xs  btn-warning time_btn']);
+                            }
 
                         }
+                    }
+
                     return $fin;
                 },
             ],

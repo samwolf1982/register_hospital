@@ -107,6 +107,8 @@ class SiteController extends Controller
                 $date = new DateTime('NOW');
                 $active_day_date = new DateTime('NOW');
                 $day_week=date('w'); // смещение на количесвто дней от текущего дня до понедельника
+
+                Yii::error([ 'me-date'=> date('Y/m/d H:i:s')]);
                 if ($day_week==6){  $date->modify('+2 day');// суботта + 2 дня
                 }elseif ($day_week==0){
                     $date->modify('+1 day');   // неділя +1ы
