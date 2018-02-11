@@ -24,8 +24,8 @@ echo $form->field($model, 'cod')->textInput(['maxlength' => true,'class'=>'hidde
     }
 
     .wrap_doc img  {
-        width: 140px;
-        height: 140px;
+        width: 116px;
+        height: 116px;
     }
 
 
@@ -92,6 +92,10 @@ text-align: center;
         box-shadow: none;
     }
 
+    .btn-close-time{
+        background-color: lightgrey;
+    }
+
 
 </style>
 
@@ -130,16 +134,28 @@ foreach ($doc_list as $item) {  ?>
                  <span>  <?=$selected_profesion->name;?> </span>
 
                     <div class="schedule-doctor-schedule">
+                    <?php   // generate work list
+
+                    foreach ($item['calendar_list'] as $work_list) {  ?>
                         <div class="day-wrapper">
-                            <span class="day">Пн, 05</span>
-                                   8:00-12:00			</div>
-                        <div class="day-wrapper">
-                            <span class="day">Ср, 07</span>
-                            13:00-17:00			</div>
-                        <div class="day-wrapper">
-                            <span class="day">Пт, 09</span>
-                            8:00-12:00			</div>
+                            <span class="day"><?=$work_list['day_name'];?></span>
+                            <?php  yii::error($work_list);  ?>
+                            <?=$work_list['timetable_work'];?>
+
+
+                        </div>
+
+                    <?php   } ?>
                     </div>
+
+
+
+
+
+
+
+
+
                 </div>
             </div>
 
@@ -161,12 +177,25 @@ foreach ($doc_list as $item) {  ?>
 
                                          <?php  foreach ($info['doclist']['timetable'] as $json) { ?>
 
-                                               <?php if ($json->type=='time'){?>
+                                               <?php
+                                               // yii::error(['state'=>$json->status]);
+                                               if ($json->type=='time'){?>
                                                <div class="day_time hour">
                                                    <?php
                                                    if ($info['active_day']){
-                                                       echo Html::button($json->val, ['class' => 'btn btn-schedule', 'data-target'=>'#time_modal','data-toggle'=>'modal', 'name' => 'dok_order',
-                                                           'href'=> Url::to(['site/checkorder', 'cod' => $model->cod,'doc_id'=>$item['doctor']->id,'calendar_id'=>$info['calendar_id'],'day_id'=>$json->id]), 'value' => $info['doclist']['doc_id'] . '_' . $json->id]);
+                                                       if (!is_null($json->status)){   // уже есть ставка
+                                                        //   echo Html::button($json->val, ['class' => 'btn btn-schedule btn-close-time', 'data-target'=>'#time_modal','data-toggle'=>'modal', 'name' => 'dok_order',
+                                                          //     'href'=> Url::to(['site/checkorder', 'cod' => $model->cod,'doc_id'=>$item['doctor']->id,'calendar_id'=>$info['calendar_id'],'day_id'=>$json->id]), 'value' => $info['doclist']['doc_id'] . '_' . $json->id]);
+                                                           echo Html::button($json->val, ['class' => 'btn btn-schedule btn-close-time', "data-toggle"=>"tooltip","data-placement"=>"top","title"=>"Уже занято",
+                                                               'href'=> Url::to(['site/checkorder', 'cod' => $model->cod,'doc_id'=>$item['doctor']->id,'calendar_id'=>$info['calendar_id'],'day_id'=>$json->id]), 'value' => $info['doclist']['doc_id'] . '_' . $json->id]);
+
+
+
+                                                       }else{
+                                                           echo Html::button($json->val, ['class' => 'btn btn-schedule', 'data-target'=>'#time_modal','data-toggle'=>'modal', 'name' => 'dok_order',
+                                                               'href'=> Url::to(['site/checkorder', 'cod' => $model->cod,'doc_id'=>$item['doctor']->id,'calendar_id'=>$info['calendar_id'],'day_id'=>$json->id]), 'value' => $info['doclist']['doc_id'] . '_' . $json->id]);
+                                                       }
+
                                                    }else{
 //                                                       echo Html::tag('span',$json->val,['class'=>'in_active_day']);
                                                        echo Html::button($json->val, ['class' => 'clear_btn btn-schedule disabled']);
@@ -216,6 +245,18 @@ foreach ($doc_list as $item) {  ?>
 
     <hr>
 <?php }  ?>
+
+<?php
+//начало многосточной строки, можно использовать любые кавычки
+$script = <<< JS
+$(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+})
+JS;
+$this->registerJs($script, yii\web\View::POS_READY);
+?>
+
+
 
 
 

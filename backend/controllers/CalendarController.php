@@ -3,6 +3,7 @@
 namespace backend\controllers;
 
 use app\models\DayPeriod;
+use app\models\Doctor;
 use DateTime;
 use Yii;
 use app\models\Calendar;
@@ -41,9 +42,13 @@ class CalendarController extends Controller
         $searchModel = new CalendarSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+
+
+
         return $this->render('index', [
             'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+            'dataProvider' => $dataProvider
+
         ]);
     }
 
@@ -114,7 +119,7 @@ class CalendarController extends Controller
                 $next_week_date->modify("+14 day");
              $fordel=   Calendar::find()->where(['doctor_id'=>$model->doctor_id])->andWhere(['>=','date',$next_week_date->format('Y-m-d')])->all();
 
-                yii::error( [count( $fordel),'doctor_id'=>$model->doctor_id, $next_week_date->format('Y-m-d') ]);
+              //  yii::error( [count( $fordel),'doctor_id'=>$model->doctor_id, $next_week_date->format('Y-m-d') ]);
                 foreach ($fordel as $item) {
                     $item->delete();
              }
@@ -126,8 +131,9 @@ class CalendarController extends Controller
                                    $doc_day= new DateTime($item['model']->date);
                                    $doc_day->modify("+7 day");
                                    $o->date= $doc_day->format('Y-m-d') ;
-                                   $o->timetable=$item['model']->timetable;
+                                   $o->timetable= $this->clear_close_day(  $item['model']->timetable);
                                    $o->created_at=$d;
+                                   $o->timetable_work=$item['model']->timetable_work;
                                  //  $o->validate();
                                //   yii::error(['did'=>$item['model']->doctor_id, $o->errors]);
                                    $o->save();
@@ -160,6 +166,27 @@ class CalendarController extends Controller
         ]);
     }
 
+
+    //чиста json от close day
+    //"id":21,"type":"text","val
+    private function clear_close_day($json){
+        $res=[];
+          if (empty($json)){ $res=$json;}else{
+                      $j= json_decode($json);
+                      if (is_array($j)){
+                          foreach ($j as $i) {
+                                 $res[]=["id"=>$i->id,"type"=>$i->type,"text"=>$i->text,"val"=>$i->val];
+                          }
+                          $res=json_encode($res);
+                      }else{
+                          $res=$json;
+                      }
+
+          }
+
+        return $res;
+    }
+
     /**
      * Creates a new Calendar model.
      * If creation is successful, the browser will be redirected to the 'view' page.
@@ -168,13 +195,93 @@ class CalendarController extends Controller
     public function actionCreate()
     {
         $model = new Calendar();
+        $model->created_at=date('Y-m-d');
+
+
+        $day_periods=DayPeriod::find()->where(1)->all();
+
+        $check_names=[];
+        $options_list=[];
+        foreach ($day_periods as $day_period) {
+//            $check[]=$day_period->id;
+            $check_names[]=$day_period->name;
+            $options_list[]=['name'=>$day_period->name, 'id'=>$day_period->id];
+        }
+
+        $value_name=$_POST['tags2'];
+
+
+        $doctor_list=Doctor::find()->where(1)->all();
+
+        $doctor_list_drop=[];
+        foreach ($doctor_list as $item) {
+//            [['name', 'surname', 'patronymic', 'phone'], 'string', 'max' => 255],
+            $doctor_list_drop[$item->id]= $item->id.") ".  $item->surname.' '.$item->name." ".$item->patronymic." (".$item->profession->name.") ";
+        }
+
+
+
+
+        if (Yii::$app->request->post()){
+            $p=Yii::$app->request->post('tags2');
+            if (!empty($p)){
+
+                $parr_ids = explode(",", $p);
+//         if (!is_array($parr_ids)){
+//             yii::error(['post not arr'=>$p]);
+//             $parr_ids=[];
+//             $parr_ids[]=intval($p);
+//         }
+//         yii::error(['ppp'=>$parr_ids]);
+
+                //$list_period[]=['id'=>$f++,'type'=>'empty_day', 'val'=> "В этот день приёма нет.",];
+                $list_period=[];
+                foreach ($parr_ids as $parr_id) {
+
+                    $o=  DayPeriod::find()->where(['id'=>$parr_id])->one();
+                    yii::error(['ppp'=>$parr_ids,'o'=>$o]);
+                    if ($o){
+                        $list_period[]=['id'=>$o->id,'type'=>$o->type, 'val'=> $o->name];
+                    }
+                }
+
+
+                $timetable= json_encode($list_period);
+//         yii::error(['sjon'=>$timetable]);
+                if (empty($timetable)){
+                    $model->timetable='';
+                }else{
+                    $model->timetable=$timetable;
+                }
+            }else{
+                $model->timetable='';
+            }
+
+
+
+
+
+
+
+        }
+
+
+
+
+
+
+
+
+        $model->load(Yii::$app->request->post());
+        $model->validate();
+        yii::error($model->errors);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('create', [
-            'model' => $model,
+            'model' => $model            ,'doctor_list_drop'=>$doctor_list_drop,'options_list'=>$options_list,'value_name'=>$value_name,
         ]);
     }
 
@@ -191,13 +298,6 @@ class CalendarController extends Controller
 
 
 //        // находим день потом берем из него создаем неделю 7 дней и в вюшку 7 моделей
-//        $model= $this->findModel($id);
-//        if ($model){
-//
-//            $active_day_date = new DateTime($model->date);
-//            $day_week=date('w'); // смещение на количесвто дней от текущего дня до понедельника
-//            yii::error([$day_week]);
-//        }
 
 
         $day_periods=DayPeriod::find()->where(1)->all();
@@ -249,7 +349,7 @@ if (Yii::$app->request->post()){
          foreach ($parr_ids as $parr_id) {
 
              $o=  DayPeriod::find()->where(['id'=>$parr_id])->one();
-             yii::error(['ppp'=>$parr_ids,'o'=>$o]);
+           //  yii::error(['ppp'=>$parr_ids,'o'=>$o]);
              if ($o){
                  $list_period[]=['id'=>$o->id,'type'=>$o->type, 'val'=> $o->name];
              }

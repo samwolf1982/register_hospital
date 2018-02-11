@@ -2,6 +2,7 @@
 namespace frontend\controllers;
 
 use app\models\Calendar;
+use app\models\DayPeriod;
 use app\models\Doctor;
 use app\models\Order;
 use app\models\Profession;
@@ -108,7 +109,7 @@ class SiteController extends Controller
                 $active_day_date = new DateTime('NOW');
                 $day_week=date('w'); // смещение на количесвто дней от текущего дня до понедельника
 
-                Yii::error([ 'me-date'=> date('Y/m/d H:i:s')]);
+              //  Yii::error([ 'me-date'=> date('Y/m/d H:i:s')]);
                 if ($day_week==6){  $date->modify('+2 day');// суботта + 2 дня
                 }elseif ($day_week==0){
                     $date->modify('+1 day');   // неділя +1ы
@@ -131,7 +132,7 @@ class SiteController extends Controller
                         $tj=$date->format('Y-m-d');
                         $tmp_cal=[];
                             //самій быстрый вариант при множестве трабла IN ( 12 2 2 23 ...)
-                            $o= Calendar::find()->select(['timetable','id'])->where(['doctor_id'=>$doctor->id,'date'=>$tj])->limit(1)->one();
+                            $o= Calendar::find()->select(['timetable','id','timetable_work'])->where(['doctor_id'=>$doctor->id,'date'=>$tj])->limit(1)->one();
                                $json_arr = json_decode($o->timetable);
                                $tmp_cal=['doc_id'=>$doctor->id,'timetable'=> $json_arr];
                                $active_day=true;
@@ -140,7 +141,7 @@ class SiteController extends Controller
                         $numnber_day_bd=date('z',$date->getTimestamp()); // номер дня в году     44
                         if ($numnber_day > $numnber_day_bd ){ $active_day=false;}
 //                        yii::error($o);
-                               $calendar_list[]=['doclist'=>$tmp_cal,'day_name'=> sprintf ("%s, %d",$id,$date->format('d')),'active_day'=>$active_day,'calendar_id'=>$o->id];
+                               $calendar_list[]=['doclist'=>$tmp_cal,'day_name'=> sprintf ("%s, %d",$id,$date->format('d')),'active_day'=>$active_day,'calendar_id'=>$o->id,'timetable_work'=>$o->timetable_work];
                         unset($tmp_cal);
                         $date->modify('+1 day');
                     }
@@ -214,7 +215,7 @@ class SiteController extends Controller
 
 
 
-            $m_list=["Января", "Февраля", "Марта","Апреля","Мая","Июня","Июля","Августа","Сентября","Октября","Ноября","Декабря"];
+            $m_list=["","Января", "Февраля", "Марта","Апреля","Мая","Июня","Июля","Августа","Сентября","Октября","Ноября","Декабря"];
             $m=$m_list[date('n',     strtotime($calendar->date))];
             $date=date("j-{$m}-Y",strtotime($calendar->date));
 //          var_dump($json_timetable);
@@ -248,17 +249,50 @@ class SiteController extends Controller
 
 //        [['cod', 'doctor_id', 'period_id', 'date', 'date_created'], 'required'],
 
-        $hash=md5($_GET['cod'].'_'.$_GET['calendar_id'].'_'.$_GET['day_id']);
+        $calendar=Calendar::find()->where(['id'=>$_GET['calendar_id']])->one();
+        $hash=md5($calendar->doctor_id.'_'.$_GET['calendar_id'].'_'.$_GET['day_id']);
         $present_order=Order::find()->where(['hash'=>$hash])->one();
 
         if ($present_order){
-            throw new ConflictHttpException('Такая заявка уже существует попробуйте выбрать другое время');
+            throw new ConflictHttpException('Невозможно подать заявку на данное время, возможно кто-то раньше уже сделал заявку на это время, попробуйте выбрать другое время');
         }
 
         $order =new Order();
         $order->cod=$_GET['cod'];
         $calendar=Calendar::find()->where(['id'=>$_GET['calendar_id']])->one();
         $order->doctor_id=$calendar->doctor_id;
+        $order->doctor_name=$calendar->doctor->surname.' '.$calendar->doctor->name.' '.$calendar->doctor->patronymic.' ('.$calendar->doctor->profession->name.")";
+
+
+      $d=  DayPeriod::find()->where(['id'=>$_GET['day_id']])->one();
+
+      $time_value="ошибка такой записи в бд не существует";
+      if ($d) {
+          $time_value = $d->name;
+          $json=   json_decode( $calendar->timetable,true);
+          if (!empty( $json)){
+              foreach ($json as &$item_json) {
+                                 if ($item_json['id']==$_GET['day_id']){
+                                     $item_json['status']='close';
+                                 }
+                     }
+                     $calendar->timetable=json_encode($json);
+              $calendar->save();
+                     unset($item_json);
+
+          }
+
+
+
+      }
+          $order->time_value=$time_value;
+
+
+
+
+
+
+
         $order->period_id=$_GET['day_id'];
         $order->date=$calendar->date;
         $order->hash=$hash;
@@ -303,7 +337,7 @@ $order->save();
 
 
 
-            $m_list=["Января", "Февраля", "Марта","Апреля","Мая","Июня","Июля","Августа","Сентября","Октября","Ноября","Декабря"];
+            $m_list=["","Января", "Февраля", "Марта","Апреля","Мая","Июня","Июля","Августа","Сентября","Октября","Ноября","Декабря"];
             $m=$m_list[date('n',     strtotime($calendar->date))];
             $date=date("j-{$m}-Y",strtotime($calendar->date));
 //          var_dump($json_timetable);
@@ -328,7 +362,7 @@ $order->save();
 
 
         return $this->render('success',
-            compact('clinic_name','adress','doc_spec','to_do','date','time','doc_order','cod','doc_name','calendar_id','day_id'));
+            compact('clinic_name','adress','doc_spec','to_do','date','time','doc_order','cod','doc_name','calendar_id','day_id','time_value'));
     }
 
 

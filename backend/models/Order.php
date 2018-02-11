@@ -14,14 +14,14 @@ use Yii;
  * @property string $client_patronymic Отчество
  * @property string $born Год рождения
  * @property int $doctor_id Доктор
+ * @property string $doctor_name Информация доктора
  * @property int $profession_id Выберите специализацию врача
  * @property int $period_id Период
+ * @property string $time_value Время
  * @property int $statusorder_id Состояние заявки
  * @property string $date Дата
  * @property string $date_created Дата создания
  * @property string $hash хеш урла для предотврашениея повторных заявок
- *
- * @property DayPeriod $period
  */
 class Order extends \yii\db\ActiveRecord
 {
@@ -39,12 +39,11 @@ class Order extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['cod', 'doctor_id', 'period_id', 'date', 'date_created'], 'required'],
-            [['client_name', 'client_surname', 'client_patronymic'], 'string'],
+            [['cod', 'date', 'date_created'], 'required'],
+            [['client_name', 'client_surname', 'client_patronymic', 'doctor_name'], 'string'],
             [['born', 'date', 'date_created'], 'safe'],
             [['doctor_id', 'profession_id', 'period_id', 'statusorder_id'], 'integer'],
-            [['cod', 'hash'], 'string', 'max' => 255],
-            [['period_id'], 'exist', 'skipOnError' => true, 'targetClass' => DayPeriod::className(), 'targetAttribute' => ['period_id' => 'id']],
+            [['cod', 'time_value', 'hash'], 'string', 'max' => 255],
         ];
     }
 
@@ -61,20 +60,14 @@ class Order extends \yii\db\ActiveRecord
             'client_patronymic' => 'Отчество',
             'born' => 'Год рождения',
             'doctor_id' => 'Доктор',
+            'doctor_name' => 'Информация доктора',
             'profession_id' => 'Выберите специализацию врача',
             'period_id' => 'Период',
+            'time_value' => 'Время',
             'statusorder_id' => 'Состояние заявки',
             'date' => 'Дата',
             'date_created' => 'Дата создания',
             'hash' => 'хеш урла для предотврашениея повторных заявок',
         ];
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getPeriod()
-    {
-        return $this->hasOne(DayPeriod::className(), ['id' => 'period_id']);
     }
 }

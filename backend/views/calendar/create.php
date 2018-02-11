@@ -6,16 +6,16 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\Calendar */
 
-$this->title = 'Create Calendar';
+$this->title = 'Добавить график';
 $this->params['breadcrumbs'][] = ['label' => 'Calendars', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="calendar-create">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+
 
     <?= $this->render('_form', [
-        'model' => $model,
+        'model' => $model,'doctor_list_drop'=>$doctor_list_drop,'options_list'=>$options_list,'value_name'=>$value_name,
     ]) ?>
 
 </div>

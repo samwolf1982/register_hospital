@@ -42,7 +42,7 @@ class Order extends \yii\db\ActiveRecord
         return [
             [[ 'doctor_id', 'period_id', 'date', 'date_created'], 'required'],
             [['cod'], 'required','message'=>'Введите ваш номер страхового полиса'],
-            [['client_name', 'client_surname', 'client_patronymic'], 'string'],
+            [['client_name', 'client_surname', 'client_patronymic','doctor_name'], 'string'],
             [['born', 'date', 'date_created'], 'safe'],
             [['doctor_id', 'profession_id', 'period_id', 'statusorder_id'], 'integer'],
             [[ 'hash'], 'string', 'max' => 255],
@@ -68,6 +68,7 @@ class Order extends \yii\db\ActiveRecord
             'profession_id' => 'Выберите специализацию врача',
             'period_id' => 'Период',
             'statusorder_id' => 'Состояние заявки',
+            'doctor_name' => 'Имя врача',
             'date' => 'Дата',
             'date_created' => 'Дата создания',
             'hash' => 'хеш урла для предотврашениея повторных заявок',

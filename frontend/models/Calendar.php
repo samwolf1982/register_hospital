@@ -34,7 +34,7 @@ class Calendar extends \yii\db\ActiveRecord
             [['date', 'doctor_id', 'created_at'], 'required'],
             [['date', 'created_at'], 'safe'],
             [['doctor_id'], 'integer'],
-            [['timetable'], 'string'],
+            [['timetable','timetable_work'], 'string'],
             [['doctor_id'], 'exist', 'skipOnError' => true, 'targetClass' => Doctor::className(), 'targetAttribute' => ['doctor_id' => 'id']],
         ];
     }
@@ -48,7 +48,8 @@ class Calendar extends \yii\db\ActiveRecord
             'id' => 'ID',
             'date' => 'Дата (год-мес-день)',
             'doctor_id' => 'Врач',
-            'timetable' => 'График работы',
+            'timetable' => 'График приема',
+            'timetable_work' => 'График работы',
             'created_at' => 'Время создания',
         ];
     }

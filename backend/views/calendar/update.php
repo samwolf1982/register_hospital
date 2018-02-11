@@ -43,6 +43,9 @@ $this->params['breadcrumbs'][] = 'Update';
 
         <?php $form = ActiveForm::begin(); ?>
 
+
+        <?= $form->field($model, 'timetable_work')->textInput() ?>
+
         <label for="">Отметьте время приема</label>
         <?php
 

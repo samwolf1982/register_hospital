@@ -24,9 +24,9 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'phone')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'status_id')->textInput() ?>
+    <?= $form->field($model, 'status_id')->hiddenInput()->label("") ?>
 
-    <?= $form->field($model, 'area_id')->textInput() ?>
+    <?= $form->field($model, 'area_id')->hiddenInput()->label("") ?>
 
     <?= $form->field($model, 'profession_id')->dropDownList($profession_list_drop); ?>
     <?php // $form->field($model, 'profession_id')->textInput() ?>

@@ -98,6 +98,9 @@ class DoctorController extends Controller
     public function actionCreate()
     {
         $model = new Doctor();
+        $model->status_id=1;
+        $model->area_id=1;
+
 
 
         $profession_list_drop = ArrayHelper::map(Profession::find()->all(),'id','name');

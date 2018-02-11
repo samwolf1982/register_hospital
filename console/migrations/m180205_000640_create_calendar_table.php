@@ -17,7 +17,8 @@ class m180205_000640_create_calendar_table extends Migration
             'id' => $this->primaryKey(),
             'date'=>$this->date()->notNull()->comment('Дата (год-мес-день)'),
             'doctor_id'=>$this->integer()->notNull()->comment('Врач'),
-            'timetable'=>$this->text()->null()->comment('График работы'),     // json
+            'timetable'=>$this->text()->null()->comment('Время приема'),     // json
+            'timetable_work'=>$this->text()->null()->comment('График работы. например (9:00-18:00)'),     // слева отображение
 
             'created_at'=>$this->dateTime()->notNull()->comment('Время создания'),
         ]);
@@ -60,7 +61,7 @@ class m180205_000640_create_calendar_table extends Migration
 
 
         $date = new DateTime('2018-01-01');
-        foreach (range(1,60) as $j) {
+        foreach (range(1,250) as $j) {
             // grafic dreate
 
             // generate  time in json

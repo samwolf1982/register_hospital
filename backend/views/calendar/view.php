@@ -55,9 +55,18 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value'=> $model->doctor->name.' '.$model->doctor->surname.' '.$model->doctor->patronymic
             ],
 
+
+                    [
+                'attribute'=>'timetable_work',
+                'label'=>'График работы (9:00-18:00)',
+                'value'=> $model->timetable_work
+            ],
+
+
+
             [
                 'attribute' => 'timetable',
-                'label'=>'График работы на текущий день',
+                'label'=>'График приема на текущий день',
                 'filter' =>false,
                 'format' => 'raw',
                 'value' => function ($model) {

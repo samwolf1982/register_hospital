@@ -21,11 +21,13 @@ class m180203_145751_create_order_table extends Migration
             'client_patronymic'=>$this->text()->null()->comment('Отчество'),
             'born'=>$this->date()->null()->comment('Год рождения'),
 
-            'doctor_id'=>$this->integer()->notNull()->comment('Доктор'),
+            'doctor_id'=>$this->integer()->null()->comment('Доктор'),
+            'doctor_name'=>$this->text()->null()->comment('Информация доктора'),
 
             'profession_id'=>$this->integer()->null()->comment('Выберите специализацию врача') , // удобство для пост запроса используется только для определения етапа в отправке форм
 
-            'period_id'=>$this->integer()->notNull()->comment('Период'),
+            'period_id'=>$this->integer()->null()->comment('Период'),
+            'time_value'=>$this->string()->null()->comment('Время'),
             'statusorder_id'=>$this->integer()->notNull()->defaultValue(0)->comment('Состояние заявки'),// 0 новая  1 закрытая
             'date'=>$this->date()->notNull()->comment('Дата'),// число на когда записался человек
             'date_created'=>$this->dateTime()->notNull()->comment('Дата создания'),
@@ -34,7 +36,7 @@ class m180203_145751_create_order_table extends Migration
         ]);
 
 //        $this->addForeignKey('order_to_doctor', '{{%order}}', 'doctor_id', '{{%doctor}}', 'id', 'NO ACTION', 'CASCADE');
-        $this->addForeignKey('period_to_doctor', '{{%order}}', 'period_id', '{{%day_period}}', 'id', 'NO ACTION', 'CASCADE');
+       // $this->addForeignKey('period_to_doctor', '{{%order}}', 'period_id', '{{%day_period}}', 'id', 'NO ACTION', 'CASCADE');
 
 
         $faker = Faker\Factory::create();
@@ -50,9 +52,9 @@ class m180203_145751_create_order_table extends Migration
           $dt=  $faker->dateTimeBetween($startDate = '-30 years', $endDate = 'now', $timezone = null)->format('Y-m-d');
           $dt_born=  $faker->dateTimeBetween($startDate = '-30 years', $endDate = 'now', $timezone = null)->format('Y-m-d');
 //            $dt=  date_format( $dt,'Y-m-d');
-            $doc_list[]= [ $faker->iban("UA"), $faker->firstName(),$faker->lastName(),$faker->lastName(),$dt_born,  $faker->numberBetween(1,500),$faker->numberBetween(1,20),$faker->numberBetween(0,1),$dt,date('Y-m-d H:i:s')  ];
+            $doc_list[]= [ $faker->iban("UA"), $faker->firstName(),$faker->lastName(),$faker->lastName(),$dt_born,$faker->numberBetween(1,20),$faker->numberBetween(0,1),$dt,date('Y-m-d H:i:s')  ];
         }
-        $this->batchInsert('{{%order}}', ['cod','client_name','client_surname','client_patronymic','born', 'doctor_id','period_id','statusorder_id','date','date_created'],
+        $this->batchInsert('{{%order}}', ['cod','client_name','client_surname','client_patronymic','born', 'doctor_id','statusorder_id','date','date_created'],
             $doc_list
         );
 
