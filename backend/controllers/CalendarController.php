@@ -219,11 +219,17 @@ class CalendarController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+    public function actionCreate($id='')
     {
         $model = new Calendar();
         $model->created_at=date('Y-m-d');
 
+        if (!empty($id) ){
+            $doc=Doctor::find()->where(['id'=>$id])->one();
+            if ($doc){
+                $model->doctor_id=$doc->id;
+            }
+        }
 
         $day_periods=DayPeriod::find()->where(1)->all();
 

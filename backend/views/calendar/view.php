@@ -108,6 +108,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <div class="form-group">
             <?= Html::submitButton('Клонировать в следущую неделю', ['class' => 'btn btn-primary']) ?>
+            <?= Html::a('Добавить график',Url::toRoute(['calendar/create','id'=>$model->doctor->id]), ['class' => 'btn btn-success']) ?>
         </div>
 
         <div class="form-group">
