@@ -49,25 +49,42 @@ $this->params['breadcrumbs'][] = 'Update';
         <label for="">Отметьте время приема</label>
         <?php
 
+//        echo SelectizeTextInput::widget([
+//            'name' => 'tags2',
+//            'value' => $value_name,
+//
+//            'clientOptions' => [
+//                'plugins'=> ['remove_button'],
+////                  'plugins'=> ['drag_drop'],
+//                'delimiter'=> ',',
+//                'persist'=> false,
+//                'options'=> $options_list,
+//                'valueField'=>'id',
+//                'labelField'=>'name',
+//                'searchField'=>'name',
+//            ],
+//        ]);
+
+
+
         echo SelectizeTextInput::widget([
             'name' => 'tags2',
             'value' => $value_name,
 
             'clientOptions' => [
-                'plugins'=> ['remove_button'],
+              //  'plugins'=> ['remove_button'],
+                  'plugins'=> ['drag_drop','remove_button'],
                 'delimiter'=> ',',
-                'persist'=> 'false',
+                'persist'=> false,
                 'options'=> $options_list,
                 'valueField'=>'id',
                 'labelField'=>'name',
                 'searchField'=>'name',
+
             ],
         ]);
 
         ?>
-
-
-
         <?= $form->field($model, 'date')->hiddenInput()->label("") ?>
 
         <?= $form->field($model, 'doctor_id')->hiddenInput()->label(""); ?>
