@@ -23,6 +23,7 @@ class ProfessionController extends Controller
     public function behaviors()
     {
 
+
         return [
             'access' => [
                 'class' => AccessControl::className(),
@@ -43,14 +44,8 @@ class ProfessionController extends Controller
             ],
         ];
 
-//        return [
-//            'verbs' => [
-//                'class' => VerbFilter::className(),
-//                'actions' => [
-//                    'delete' => ['POST'],
-//                ],
-//            ],
-//        ];
+
+
     }
 
     /**

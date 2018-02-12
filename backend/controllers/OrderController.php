@@ -5,6 +5,7 @@ namespace backend\controllers;
 use Yii;
 use app\models\Order;
 use app\models\OrderSearch;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -17,9 +18,33 @@ class OrderController extends Controller
     /**
      * @inheritdoc
      */
+//    public function behaviors()
+//    {
+//        return [
+//            'verbs' => [
+//                'class' => VerbFilter::className(),
+//                'actions' => [
+//                    'delete' => ['POST'],
+//                ],
+//            ],
+//        ];
+//    }
+
     public function behaviors()
     {
+
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+//                'only' => ['login', 'logout', 'signup'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['index','delete'],
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -27,7 +52,17 @@ class OrderController extends Controller
                 ],
             ],
         ];
+
+//        return [
+//            'verbs' => [
+//                'class' => VerbFilter::className(),
+//                'actions' => [
+//                    'delete' => ['POST'],
+//                ],
+//            ],
+//        ];
     }
+
 
     /**
      * Lists all Order models.

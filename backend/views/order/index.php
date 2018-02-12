@@ -78,7 +78,7 @@ $this->params['breadcrumbs'][] = $this->title;
             //'date_created',
             //'hash',
 
-           // ['class' => 'yii\grid\ActionColumn'],
+            ['class' => 'yii\grid\ActionColumn','template' => '<div class="no-print"> {delete} </div>'],
         ],
     ]); ?>
 </div>

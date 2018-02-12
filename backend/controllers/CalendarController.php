@@ -9,6 +9,7 @@ use Yii;
 use app\models\Calendar;
 use backend\models\CalendarSearch;
 use yii\base\DynamicModel;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -21,9 +22,22 @@ class CalendarController extends Controller
     /**
      * @inheritdoc
      */
+
     public function behaviors()
     {
+
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+//                'only' => ['login', 'logout', 'signup'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['index','view','update','delete','create'],
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -31,7 +45,20 @@ class CalendarController extends Controller
                 ],
             ],
         ];
+
+
     }
+//    public function behaviors()
+//    {
+//        return [
+//            'verbs' => [
+//                'class' => VerbFilter::className(),
+//                'actions' => [
+//                    'delete' => ['POST'],
+//                ],
+//            ],
+//        ];
+//    }
 
     /**
      * Lists all Calendar models.
