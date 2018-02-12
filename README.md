@@ -1,6 +1,43 @@
-backend/config/params.php   
-поставить свой адрес
- 'frontendhost' => 'http://localhost5/',    
+  
+
+
+
+
+
+1) способ 
+
+      -- клонировать и делать миграции
+
+
+2) cпособ
+
+        -- распаковать архив doctorregister.rar
+        cоздать 2 поддомена
+        и направить их в 
+        
+    первый в     frontend/web
+    
+    
+    второй в     backend/web
+    
+    
+    backend/config/params.php   
+    поставить свой адрес
+     'frontendhost' => 'http://адрес_вашего_поддомене_что_указыввет_в_frontend/web', 
+     
+     
+     
+     common/config/main-local.php
+     прописать подключение к бд. 
+    
+    
+    
+    frontend/config/params.php
+    
+    здесь прописать  емейлы  и название клиники больницы (оно будет отображаться пользователю во время заявки)
+    
+    
+
 
 Yii 2 Advanced Project Template
 ===============================
