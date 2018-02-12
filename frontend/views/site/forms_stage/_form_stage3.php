@@ -94,6 +94,12 @@ text-align: center;
 
     .btn-close-time{
         background-color: lightgrey;
+        cursor: initial;
+    }
+    .btn-close-time:hover{
+        background-color: lightgrey;
+        border-color: lightgrey;
+        color: #e82654!important;
     }
 
 

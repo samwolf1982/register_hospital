@@ -1,3 +1,7 @@
+backend/config/params.php   
+поставить свой адрес
+ 'frontendhost' => 'http://localhost5/',    
+
 Yii 2 Advanced Project Template
 ===============================
 

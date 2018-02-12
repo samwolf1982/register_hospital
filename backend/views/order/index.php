@@ -2,7 +2,8 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
-
+//use yii\jui\DatePicker;
+use kartik\daterange\DateRangePicker;
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\OrderSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -10,14 +11,25 @@ use yii\grid\GridView;
 $this->title = 'Предварительная запись';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+<style>
+    @media print
+    {
+        .no-print, .no-print *,.pagination, thead
+        {
+            display: none !important;
+        }
+    }
+</style>
+
 <div class="order-index">
 
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
-    <p>
-        <?php // Html::a('Create Order', ['create'], ['class' => 'btn btn-success']) ?>
+    <p class="no-print">
+        <button class="pull-right" onclick="window.print();">Печать</button>
     </p>
+
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -35,9 +47,34 @@ $this->params['breadcrumbs'][] = $this->title;
             'doctor_name:ntext',
             //'profession_id',
             //'period_id',
-            'time_value',
+
             //'statusorder_id',
-            'date',
+
+            [
+                'attribute' => 'date',
+                'value' => 'date',
+              //  'filter' => DatePicker::widget(['model' => $searchModel,'attribute' => 'date', 'language' => 'ru', 'dateFormat' => 'yyyy-MM-dd','type'=>"input-daterange"]),
+                'filter' =>
+
+                  //  DatePicker::widget(['model' => $searchModel,'attribute' => 'date', 'language' => 'ru', 'dateFormat' => 'yyyy-MM-dd','type'=>"input-daterange"]),
+                 DateRangePicker::widget([
+ 'model' => $searchModel,
+    'attribute'=>'date',
+    'convertFormat'=>true,
+
+    'pluginOptions'=>[
+        //'timePicker'=>true,
+        //'timePickerIncrement'=>30,
+
+        'locale'=>[
+            'format'=>'Y-m-d',
+            'separator' => ':',
+        ]
+    ]
+])
+            ],
+            'time_value',
+           // 'date',
             //'date_created',
             //'hash',
 

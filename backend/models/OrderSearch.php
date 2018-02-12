@@ -61,14 +61,37 @@ class OrderSearch extends Order
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'born' => $this->born,
-            'doctor_id' => $this->doctor_id,
-            'profession_id' => $this->profession_id,
+          //  'born' => $this->born,
+           // 'doctor_id' => $this->doctor_id,
+            //'profession_id' => $this->profession_id,
             'period_id' => $this->period_id,
             'statusorder_id' => $this->statusorder_id,
-            'date' => $this->date,
+          //  'date' => $this->date,
             'date_created' => $this->date_created,
         ]);
+
+        if (!empty($this->date)){
+            $from_to_arr = explode(":", $this->date);
+            if (!empty($from_to_arr[0]) && !empty($from_to_arr[1])){
+                if ($from_to_arr[0]==$from_to_arr[1]){
+                    $query->andFilterWhere(['date'=>$from_to_arr[0]]);
+                }else{
+                    $query->andFilterWhere(["between",'date', $from_to_arr[0],$from_to_arr[1]]);
+                }
+
+            }elseif (!empty($from_to_arr[0])){
+                $query->andFilterWhere(['date'=>$from_to_arr[0]]);
+            }elseif (!empty($from_to_arr[1])){
+                $query->andFilterWhere(['date'=>$from_to_arr[1]]);
+            }
+
+
+        }
+
+
+
+
+      //  where(['between', 'created_date', $salesReport -> fromDate, $salesReport -> toDate]);
 
         $query->andFilterWhere(['like', 'cod', $this->cod])
             ->andFilterWhere(['like', 'client_name', $this->client_name])
