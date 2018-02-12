@@ -24,6 +24,7 @@ class ProfessionController extends Controller
     {
 
 
+
         return [
             'access' => [
                 'class' => AccessControl::className(),
