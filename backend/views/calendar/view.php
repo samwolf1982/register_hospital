@@ -21,6 +21,9 @@ $this->params['breadcrumbs'][] = $this->title;
         min-height: 140px;
     }
 
+    .marleft10{
+        margin-left: 10px;
+    }
 </style>
 
 
@@ -131,7 +134,20 @@ $this->params['breadcrumbs'][] = $this->title;
 <?php foreach ($calendar_list_model as $item) { ?>
     <div class="col-md-4">
         <span class="lead pull-left"><?=$item['name']?></span>
-        <?= Html::a('Редактировать',Url::toRoute(['calendar/update','id'=>$item['model']->id]),['class'=>'btn btn-xs btn-warning pull-right']);  ?>
+
+        <?= Html::a('Редактировать',Url::toRoute(['calendar/update','id'=>$item['model']->id]),['class'=>'btn btn-xs btn-warning pull-right marleft10']);  ?>
+        <?= Html::a('Перейти',Url::toRoute(['calendar/view','id'=>$item['model']->id]),['class'=>'btn btn-xs btn-success pull-right marleft10']);  ?>
+
+
+
+        <?= Html::a('Удалить',Url::toRoute(['calendar/delete','id'=>$item['model']->id]),['class'=>'btn btn-xs btn-danger pull-right marleft10', 'data' => [
+            'confirm' => 'Are you sure you want to delete this item?',
+            'method' => 'post',
+        ],]);  ?>
+
+
+
+
 
 
         <div class="clearfix"></div>

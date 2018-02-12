@@ -96,7 +96,7 @@ class CalendarController extends Controller
             $date = new DateTime($model->date);// c нее отcчет
             $day_week=date('w',$date->getTimestamp()); // смещение на количесвто дней от текущего дня до понедельника
 
-            yii::error(['day'=>$day_week]);
+         //   yii::error(['day'=>$day_week]);
             if ($day_week>1){
                 $day_week=$day_week-1;
                 $date->modify("-{$day_week} day");
@@ -423,7 +423,91 @@ if (Yii::$app->request->post()){
      */
     public function actionDelete($id)
     {
+
+        // находим день потом берем из него создаем неделю 7 дней и в вюшку 7 моделей
+        $model= $this->findModel($id);
+        if ($model){
+            $date = new DateTime($model->date);// c нее отcчет
+            $day_week=date('w',$date->getTimestamp()); // смещение на количесвто дней от текущего дня до понедельника
+
+            //   yii::error(['day'=>$day_week]);
+            if ($day_week>1){
+                $day_week=$day_week-1;
+                $date->modify("-{$day_week} day");
+            }elseif ($day_week==0){
+//                $day_week++;
+                $day_week=6;
+                $date->modify("-{$day_week} day");
+                //$date->modify("+{$day_week} day");
+            }
+            // поиск 7 моделей пон вт ср ...
+
+            $day_list=[];
+            foreach (range(0,6) as $item) {
+                $day_list[]= $date->format('Y-m-d');
+                $date->modify("+1 day");
+            }
+
+            //  yii::error($day_list);
+//            SELECT * FROM `calendar` WHERE `doctor_id` =500 AND `date` in ("2018-02-09","2018-02-10","2018-02-11","2018-02-12","2018-02-13");
+            $calendar_list=     Calendar::find()->where(['doctor_id'=>$model->doctor_id])->andWhere(['in','date',$day_list])->orderBy(['date'=>SORT_ASC])->all();
+            $day_week_list=["Воскресенье","Понедельник","Вторник","Среда","Четверг","Пятница","Суббота"];
+            $calendar_list_model=[];
+            // проход по всему что нашлось и разметка по дням недели
+            foreach ($calendar_list as $item) {
+                $active_day_date = new DateTime($item->date);
+                $index_day=  date('w',$active_day_date->getTimestamp());
+                $calendar_list_model[]=['name'=>$day_week_list[$index_day] . ' ( '.$item->date." )" ,'model'=>$item];
+            }
+
+            // yii::error($calendar_list_model);
+        }
+        $next_week_date=  new DateTime($calendar_list_model[0]['model']->date);// понедельник сделущей недели
+        $next_week_date->modify("+7 day");
+        $next_week_date_model= Calendar::find()->where(['doctor_id'=>$model->doctor_id,'date'=>$next_week_date->format('Y-m-d')])->one();
+        $next_week_date->modify("-14 day");
+        $prew_week_date_model= Calendar::find()->where(['doctor_id'=>$model->doctor_id,'date'=>$next_week_date->format('Y-m-d')])->one();
+
+//        $model_monday = new DynamicModel( ['id_first_week_day'=> $calendar_list_model[0]['model']->id]);
+//        $model_monday->load($_POST);
+
+
+
+        if (count($calendar_list_model)>1){
+            // проход по всем моделям и если совпадение удалить
+            foreach ($calendar_list_model as $key =>$item) {
+                                    if ($item['model']->id==$id){ // check -- delete
+                                               $this->findModel($id)->delete();
+                                              if ($key==0){
+                                                  return $this->redirect(['calendar/view','id'=>$calendar_list_model[1]['model']->id]);
+                                              }else{
+                                                  return $this->redirect(['calendar/view','id'=>$calendar_list_model[0]['model']->id]);
+                                              }
+                                    }
+                 }
+         //   return $this->redirect(['calendar/view','id'=>$calendar_list_model[0]['model']->id]);
+        }elseif(count($calendar_list_model)==1){     // одна модель делет и индекс
+                    $this->findModel($id)->delete();
+            return $this->redirect(['index']);
+        }else{
+            $this->findModel($id)->delete();
+            return $this->redirect(['index']);
+        }
+
         $this->findModel($id)->delete();
+        return $this->redirect(['index']);
+
+  // return $this->redirect(['calendar/view','id'=>$id]);
+
+
+
+        return $this->render('view', [
+            'model' => $this->findModel($id),'calendar_list_model'=>$calendar_list_model,'model_monday'=>$model_monday,'next_week_date_model'=>$next_week_date_model,
+            'prew_week_date_model'=>$prew_week_date_model,
+        ]);
+
+//        $this->findModel($id)->delete();
+
 
         return $this->redirect(['index']);
     }

@@ -34,6 +34,11 @@ use yii\widgets\ActiveForm;
         'prompt' => 'Выберите врача...'
     ]); ?>
 
+
+    <?= $form->field($model, 'timetable_work')->textInput() ?>
+
+
+
     <label for="">Отметьте время приема</label>
     <?php
 
@@ -42,7 +47,7 @@ use yii\widgets\ActiveForm;
         'value' => $value_name,
 
         'clientOptions' => [
-            'plugins'=> ['remove_button'],
+            'plugins'=> ['drag_drop','remove_button'],
             'delimiter'=> ',',
             'persist'=> 'false',
             'options'=> $options_list,
