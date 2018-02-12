@@ -65,13 +65,12 @@ $this->title = 'Завка успешно создана';
                             </div>
 
                             <div class="content col-margin-bottom"><div class="col col-4 ta-right"><b>Дата записи</b></div>
-                                <div class="col col-8"> <?= Html::encode($date) ?>  <b> <?= Html::encode($time) ?></b></div>
+                                <div class="col col-8"> <?= Html::encode($date) ?>  </div>
                             </div>
 
-                            <div class="content col-margin-bottom"><div class="col col-4 ta-right"><b>Время записи</b></div>
+                            <div class="content col-margin-bottom"><div class="col col-4 ta-right"><b>Время приема</b></div>
                                 <div class="col col-8"> <?= Html::encode($time_value) ?></div>
                             </div>
-
 
 
                             <div class="ta-center">

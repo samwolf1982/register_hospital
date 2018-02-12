@@ -352,13 +352,13 @@ $order->save();
         $cod=$_GET['cod'];  // simple validate
 
 
-//        Yii::$app->mailer->compose()
-//            ->setFrom(Yii::$app->params['hostingemail'])
-//            ->setTo(Yii::$app->params['adminEmail'])
-//            ->setSubject('Новая запись на прием')
-//            ->setTextBody('У вас на сайте новая запись на прием')
-//            ->setHtmlBody('<b>текст сообщения в формате HTML</b>')
-//            ->send();
+        Yii::$app->mailer->compose()
+            ->setFrom(Yii::$app->params['hostingemail'])
+            ->setTo(Yii::$app->params['adminEmail'])
+            ->setSubject('Новая запись на прием')
+            ->setTextBody('У вас на сайте новая запись на прием')
+            ->setHtmlBody('<b>Номер страхового полиса: '.$order->cod.'</b><br><b>Врач: '.$doc_name.'</b><br><b>Дата: '.$date.'</b><br><b>Время: '.$time_value.'</b>')
+            ->send();
 
 
         return $this->render('success',
